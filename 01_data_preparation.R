@@ -6,6 +6,7 @@ library(corrplot)
 library(skimr)
 library(psych)
 library(lavaan)
+library(semPlot)
 
 #Read the data
 
@@ -70,4 +71,7 @@ m_1 <- cfa(model, data = data)
 summary(m_1, standardized=TRUE)
 fitmeasures(m_1,fit.measures = c("rmsea","cfi","tli","srmr"))
 
-
+semPaths(m_1, 
+         "std", 
+         curvePivot = TRUE,
+         layout = "tree2")
