@@ -41,6 +41,21 @@ skim(data)
 #Reliability
 
 alpha(data)
+
+#PCA
+pca_m <- prcomp(data, center = T, scale. = T)
+summary(pca_m)
+plot(pca_m)
+
+#EFA
+
+efa_m <- fa(data,nfactors = 3, rotate = "varimax")
+summary(efa_m)
+
+#Parallel
+parallel <- fa.parallel(data)
+
+#CFA
 #Define the latent constructs
 
 model <- '
@@ -54,3 +69,5 @@ m_1 <- cfa(model, data = data)
 
 summary(m_1, standardized=TRUE)
 fitmeasures(m_1,fit.measures = c("rmsea","cfi","tli","srmr"))
+
+
