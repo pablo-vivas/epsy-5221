@@ -3,6 +3,9 @@
 library(tidyverse)
 library(readr)
 library(corrplot)
+library(skimr)
+library(psych)
+library(lavaan)
 
 #Read the data
 
@@ -29,4 +32,25 @@ data <- data %>%
 data$Q6_8 <- 6 - data$Q6_8
 
 #Correlation
-corrplot(cor(data), method = 'number')
+corrplot(cor(data), method = 'number', )
+
+#Skim all the variables
+
+skim(data)
+
+#Reliability
+
+alpha(data)
+#Define the latent constructs
+
+model <- '
+    P1 =~ Q6_1 + Q6_4 + Q6_7 + Q6_12
+    P2 =~ Q6_6 + Q6_10
+    P4 =~ Q6_2 + Q6_8 
+    P6 =~ Q6_3 + Q6_5 
+    P8 =~ Q6_9 + Q6_11'
+
+m_1 <- cfa(model, data = data)
+
+summary(m_1, standardized=TRUE)
+fitmeasures(m_1,fit.measures = c("rmsea","cfi","tli","srmr"))
