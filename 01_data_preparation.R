@@ -2,15 +2,22 @@
 
 library(tidyverse)
 library(readr)
+<<<<<<< HEAD
+library(stringr)
+library(openxlsx)
+=======
 library(corrplot)
 library(skimr)
 library(psych)
 library(lavaan)
 library(semPlot)
+>>>>>>> 3446e4c600bf2f13b6434722dea893456b33b389
 
 #Read the data
 
 data <- read_csv("data_qualtrics.csv")
+
+time <- as.numeric(data$`Duration (in seconds)`[-c(1,2,3,14)])
 
 #Select the rows and columns needed
 data <- data %>% 
@@ -32,46 +39,21 @@ data <- data %>%
 #Reverse order of item 8
 data$Q6_8 <- 6 - data$Q6_8
 
-#Correlation
-corrplot(cor(data), method = 'number', )
+colnames(data) <- c(str_c("q0", c(1:9)),str_c("q", c(10:12))) 
+saveRDS(data, file = "data.rds")
 
-#Skim all the variables
+write.xlsx(data, "data.xlsx", col.names = TRUE, 
+           row.names = FALSE, append = FALSE, keepNA = TRUE)
 
-skim(data)
+<<<<<<< HEAD
 
-#Reliability
+table(data$q01)
 
-alpha(data)
-
-#PCA
-pca_m <- prcomp(data, center = T, scale. = T)
-summary(pca_m)
-plot(pca_m)
-
-#EFA
-
-efa_m <- fa(data,nfactors = 3, rotate = "varimax")
-summary(efa_m)
-
-#Parallel
-parallel <- fa.parallel(data)
-
-#CFA
-#Define the latent constructs
-
-model <- '
-    P1 =~ Q6_1 + Q6_4 + Q6_7 + Q6_12
-    P2 =~ Q6_6 + Q6_10
-    P4 =~ Q6_2 + Q6_8 
-    P6 =~ Q6_3 + Q6_5 
-    P8 =~ Q6_9 + Q6_11'
-
-m_1 <- cfa(model, data = data)
-
-summary(m_1, standardized=TRUE)
-fitmeasures(m_1,fit.measures = c("rmsea","cfi","tli","srmr"))
-
+x <- apply(data, 2, sd)
+sort(x)
+=======
 semPaths(m_1, 
          "std", 
          curvePivot = TRUE,
          layout = "tree2")
+>>>>>>> 3446e4c600bf2f13b6434722dea893456b33b389
